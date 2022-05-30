@@ -39,8 +39,8 @@ public:
 	{
 		return ConstIterator(this, size());
 	}
-	
-	class EmptyQueue{};
+
+	class EmptyQueue {};
 private:
 	T* m_arr;
 	int m_rearIndex; //also represents the size of the array
@@ -160,7 +160,7 @@ void Queue<T>::expand()
 	}
 
 	delete[] this->m_arr;
-	
+
 	this->m_arr = new T[newSize];
 
 	for (int i = 0; i < newSize; i++)
@@ -246,7 +246,7 @@ void transform(Queue<T>& queueToTransform, Alter a)
 }
 
 template<class T>
-T& Queue<T>::Iterator::operator*() 
+T& Queue<T>::Iterator::operator*()
 {
 	return this->queue->m_arr[this->index];
 }
@@ -284,7 +284,7 @@ typename Queue<T>::Iterator Queue<T>::Iterator::operator++(int)
 
 
 template<class T>
-bool Queue<T>::Iterator::operator!=(const Iterator& it) 
+bool Queue<T>::Iterator::operator!=(const Iterator& it)
 {
 	bool ans = !(*this == it);
 	return ans;
@@ -335,4 +335,3 @@ bool Queue<T>::ConstIterator::operator!=(const ConstIterator& it) const
 	bool ans = !(*this == it);
 	return ans;
 }
-
