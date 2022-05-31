@@ -1,40 +1,39 @@
 #ifndef EX3_HealthPoints_H
 #define EX3_HealthPoints_H
 
-#include <iostream>
-
-#define DEFAULT_MAX_HP 100
-
-
+#include<iostream>
 
 class HealthPoints
 {
 public:
-	HealthPoints();
-	HealthPoints(int initialHealth);
-	HealthPoints& operator=(const HealthPoints& hp);
-	HealthPoints& operator+=(const int hp);
-	HealthPoints& operator-=(const int hp);
-	
-	HealthPoints operator-(const int hp);
-	
-	friend bool operator==(const HealthPoints& hp1, const HealthPoints& hp2);
-	bool operator!=(const HealthPoints& hp1);
-	friend bool operator<(const HealthPoints& hp1, const HealthPoints& hp2);
-	bool operator<=(const HealthPoints& hp1);
-	bool operator>(const HealthPoints& hp1) const;
-	bool operator>=(const HealthPoints& hp1);
-	friend HealthPoints operator+(const int hp1, const HealthPoints& hp2);
-	friend HealthPoints operator+(const HealthPoints& hp1, const int hp2);
-	friend std::ostream& operator<<(std::ostream& os, const HealthPoints& hp);
+	HealthPoints(int initialHealth = 100);
+	~HealthPoints() = default;
+	HealthPoints(const HealthPoints&) = default;
+	HealthPoints& operator=(const HealthPoints&) = default;
 
+	bool operator ==(const HealthPoints& hp)const;
+	bool operator !=(const HealthPoints& hp)const;
+	bool operator >(const HealthPoints& healthPoints)const;
+	bool operator >=(const HealthPoints& healthPoints)const;
+	bool operator <(const HealthPoints& hp)const;
+	bool operator <=(const HealthPoints& hp)const;
+
+	HealthPoints& operator+=(const int&);
+	HealthPoints& operator-=(const int&);
+	HealthPoints operator-(const int&)const;
+	HealthPoints operator+(const int&) const;
+
+	friend std::ostream& operator<<(std::ostream& os, const HealthPoints& hp);
+	friend bool operator ==(const int&, const HealthPoints&);
+	friend bool operator<(const int& num, const HealthPoints& health);
+	friend bool operator>(const int& num, const HealthPoints& health);
+	friend HealthPoints operator+(const int& num, const HealthPoints& health);
 
 	class InvalidArgument {};
 
 private:
-	int m_health;
 	int m_maxHealth;
+	int m_health;
 };
-
 
 #endif //EX3_HealthPoints_H
