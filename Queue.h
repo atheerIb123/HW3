@@ -1,3 +1,6 @@
+#ifndef EX3_Queue_H
+#define EX3_Queue_H
+
 #include<iostream>
 
 #define EXPANSION_SIZE 10
@@ -92,6 +95,8 @@ private:
 	friend class Queue<T>;
 
 };
+
+#endif //EX3_Queue_H
 
 template<class T>
 Queue<T>::Queue()
