@@ -3,8 +3,6 @@
 
 #include<iostream>
 
-#define EXPANSION_SIZE 10
-
 template<class T>
 class Queue
 {
@@ -48,6 +46,9 @@ private:
 	T* m_data;
 	int m_size;
 	int m_maxQueueSize;
+	void expand();
+	
+	static const int EXPANTION_SIZE = 10;
 };
 
 template<class T>
@@ -102,7 +103,7 @@ template<class T>
 Queue<T>::Queue()
 {
 	m_size = 0;
-	m_maxQueueSize = EXPANSION_SIZE;
+	m_maxQueueSize = EXPANTION_SIZE;
 	m_data = nullptr;
 }
 
@@ -134,24 +135,31 @@ Queue<T>::Queue(const Queue& queue)
 }
 
 template<class T>
+void Queue<T>::expand()
+{
+	m_maxQueueSize += EXPANTION_SIZE;
+
+	T* newArray = new T[m_maxQueueSize];
+
+	for (int i = 0; i < m_size; i++)
+	{
+		newArray[i] = m_data[i];
+	}
+
+	m_size++;
+
+	delete[] m_data;
+	m_data = newArray;
+}
+
+template<class T>
 void Queue<T>::pushBack(const T& object)
 {
 	if (m_data != nullptr)
 	{
 		if (m_size >= m_maxQueueSize)
 		{
-			m_maxQueueSize += EXPANSION_SIZE;
-			T* newArray = new T[m_maxQueueSize];
-
-			for (int i = 0; i < m_size; i++)
-			{
-				newArray[i] = m_data[i];
-			}
-
-			m_size++;
-
-			delete[] m_data;
-			m_data = newArray;
+			expand();
 			m_data[m_size - 1] = object;
 		}
 		else
@@ -210,7 +218,7 @@ void Queue<T>::popFront()
 }
 
 template<class T>
-int Queue<T>::size()const
+int Queue<T>::size() const
 {
 	return m_size;
 }
