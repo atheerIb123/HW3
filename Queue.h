@@ -45,10 +45,8 @@ public:
 private:
 	T* m_data;
 	int m_size;
-	int m_maxQueueSize;
 	void expand();
-	
-	static const int EXPANTION_SIZE = 10;
+	void scaleDown();
 };
 
 template<class T>
@@ -103,21 +101,22 @@ template<class T>
 Queue<T>::Queue()
 {
 	m_size = 0;
-	m_maxQueueSize = EXPANTION_SIZE;
 	m_data = nullptr;
 }
 
 template<class T>
 Queue<T>::~Queue()
 {
-	delete[] m_data;
+	if (m_data != nullptr)
+	{
+		delete[] m_data;
+	}
 }
 
 template<class T>
 Queue<T>::Queue(const Queue& queue)
 {
 	m_size = queue.m_size;
-	m_maxQueueSize = queue.m_maxQueueSize;
 
 	if (m_size == 0)
 	{
@@ -137,9 +136,7 @@ Queue<T>::Queue(const Queue& queue)
 template<class T>
 void Queue<T>::expand()
 {
-	m_maxQueueSize += EXPANTION_SIZE;
-
-	T* newArray = new T[m_maxQueueSize];
+	T* newArray = new T[m_size + 1];
 
 	for (int i = 0; i < m_size; i++)
 	{
@@ -155,29 +152,24 @@ void Queue<T>::expand()
 template<class T>
 void Queue<T>::pushBack(const T& object)
 {
+	T assign = object;
+
 	if (m_data != nullptr)
 	{
-		if (m_size >= m_maxQueueSize)
-		{
-			expand();
-			m_data[m_size - 1] = object;
-		}
-		else
-		{
-			m_size++;
-			m_data[m_size - 1] = object;
-		}
+		expand();
+		m_data[m_size - 1] = assign;
 	}
 	else
 	{
-		m_data = new T[m_maxQueueSize];
-		m_data[m_size] = object;
 		m_size++;
+		m_data = new T[m_size];
+		m_data[m_size - 1] = assign;
 	}
 }
 
+
 template<class T>
-T& Queue<T>::front() 
+T& Queue<T>::front()
 {
 	if (m_size == 0)
 	{
@@ -199,22 +191,47 @@ const T& Queue<T>::front() const
 }
 
 template<class T>
+void Queue<T>::scaleDown()
+{
+	T* tempData = new T[m_size - 1];
+
+	for (int i = 0; i < m_size - 1; i++)
+	{
+		tempData[i] = m_data[i + 1];
+	}
+
+	delete[] m_data;
+	m_data = tempData;
+}
+
+template<class T>
 void Queue<T>::popFront()
 {
-	if (m_size == 0)
+	if (m_size == 0 || m_data == nullptr)
 	{
 		throw EmptyQueue();
 	}
-	
-	if (m_size > 1)
+	else if (m_size > 1)
 	{
-		for (int i = 0; i < m_size - 1; i++)
+		try
 		{
-			m_data[i] = m_data[i + 1];
+			scaleDown();
+			m_size--;
+		}
+		catch (const std::bad_alloc& err)
+		{
+			delete[] m_data;
+			m_data = nullptr;
+			m_size = 0;
+			throw err;
 		}
 	}
-
-	m_size--;
+	else
+	{
+		delete[] m_data;
+		m_data = nullptr;
+		m_size = 0;
+	}
 }
 
 template<class T>
@@ -232,7 +249,6 @@ Queue<T>& Queue<T>::operator=(const Queue<T>& queue)
 	}
 
 	m_size = queue.m_size;
-	m_maxQueueSize = queue.m_maxQueueSize;
 
 	if (m_size == 0)
 	{
